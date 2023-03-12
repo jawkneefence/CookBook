@@ -11,7 +11,15 @@
 </ion-header>
 
 <ion-content>
-  <cdk-virtual-scroll-viewport itemSize="64" minBufferPx="900" maxBufferPx="1350">
+  <div class="ion-text-center" *ngIf="!isLoading && recipes.length <=0">
+    <p>You don't have any recipes.</p>
+    <ion-button color="tlbr" routerLink = '/recipes/new-recipe'>
+      START NOW
+    </ion-button>
+  </div>
+
+  <ion-spinner *ngIf="isLoading"></ion-spinner>
+  <cdk-virtual-scroll-viewport  *ngIf="!isLoading && recipes.length > 0" itemSize="64" minBufferPx="900" maxBufferPx="1350">
     <ion-item *cdkVirtualFor="let recipe of recipes"
     [routerLink]="['/recipes', recipe.id]"
      detail>

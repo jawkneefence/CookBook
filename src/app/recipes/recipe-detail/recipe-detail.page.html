@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button text="" defaultHref="/recipes"></ion-back-button>
     </ion-buttons>
-    <ion-title>{{loadedRecipe.title}}</ion-title>
+    <ion-title>{{ isLoading ? 'Loading...' : loadedRecipe.title}}</ion-title>
     <ion-buttons slot="primary">
       <ion-button (click)="onEditRecipe()">
         <ion-icon name="create-outline" slot="icon-only"></ion-icon>
@@ -16,7 +16,10 @@
 </ion-header>
 
 <ion-content>
-  <ion-grid class = "ion-no-padding">
+  <div *ngIf="isLoading">
+    <ion-spinner></ion-spinner>
+  </div>
+  <ion-grid *ngIf="!isLoading" class = "ion-no-padding">
     <ion-row size="12" size-sm="8">
       <ion-col class = "ion-no-padding" size="12" size-sm="8">
         <ion-img [src]="loadedRecipe.imageUrl"></ion-img>

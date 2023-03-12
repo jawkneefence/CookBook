@@ -1,81 +1,126 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { take } from 'rxjs';
+import { LoadingController } from '@ionic/angular';
+import { map, switchMap, take, tap, BehaviorSubject, delay, of } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 import { Recipe } from './recipe.model';
+
+interface RecipeData {
+  imageUrl: string,
+  ingredients: string[],
+  instructions: string,
+  title: string,
+  userId: string
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class RecipesService {
-  private recipes: Recipe[] = [
-    {
-      id: 'r1',
-      title: 'Schnitzel',
-      imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Breitenlesau_Krug_Br%C3%A4u_Schnitzel.JPG/1200px-Breitenlesau_Krug_Br%C3%A4u_Schnitzel.JPG',
-      ingredients: ['French Fries', 'Pork Meat', 'Salad'],
-      instructions: 'Mix it all in a pot and serve raw.',
-      userId: 'abc'
-    },
-    {
-      id: 'r2',
-      title: 'Spaghetti',
-      imageUrl: 'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/homemade-spaghetti-sauce-vertical-1530891369.jpg',
-      ingredients: ['Pasta', 'Meat', 'Basil', 'Tomato Paste'],
-      instructions: 'Mix it all in a pot and serve raw.',
-      userId: 'abc'
-    },
-    {
-      id: 'r3',
-      title: 'Spaghetti',
-      imageUrl: 'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/homemade-spaghetti-sauce-vertical-1530891369.jpg',
-      ingredients: ['Pasta', 'Meat', 'Basil', 'Tomato Paste'],
-      instructions: 'Mix it all in a pot and serve raw.',
-      userId: 'abc'
-    },
-    {
-      id: 'r4',
-      title: 'Spaghetti',
-      imageUrl: 'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/homemade-spaghetti-sauce-vertical-1530891369.jpg',
-      ingredients: ['Pasta', 'Meat', 'Basil', 'Tomato Paste'],
-      instructions: 'Mix it all in a pot and serve raw.',
-      userId: 'abc'
-    },
-    {
-      id: 'r5',
-      title: 'Spaghetti',
-      imageUrl: 'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/homemade-spaghetti-sauce-vertical-1530891369.jpg',
-      ingredients: ['Pasta', 'Meat', 'Basil', 'Tomato Paste'],
-      instructions: 'Mix it all in a pot and serve raw.',
-      userId: 'abc'
-    }
-  ];
-  constructor(private authService: AuthService) { }
+  private _recipes = new BehaviorSubject<Recipe[]>([])
+  constructor(private authService: AuthService, private http:HttpClient, private loadingCtrl: LoadingController) { }
 
-  getAllRecipes() {
-    return [...this.recipes];
+  fetchRecipes() {
+    return this.http.get<{[key: string]: RecipeData}>(`https://mycookbook-ad00f-default-rtdb.firebaseio.com/recipeList.json?orderBy="userId"&equalTo="${this.authService.userId}"`)
+    .pipe(map(resData => {
+      const fetchedRecipes = [];
+      for (const key in resData) {
+        if(resData.hasOwnProperty(key)) {
+          fetchedRecipes.push(new Recipe(key,
+            resData[key].title,
+            resData[key].imageUrl,
+            resData[key].ingredients,
+            resData[key].instructions,
+            resData[key].userId
+            )
+          );
+        }
+      }
+      return fetchedRecipes;
+    }),
+    tap(recipes => {
+      this._recipes.next(recipes);
+    })
+    );
+  }
+
+  get recipes() {
+    return this._recipes.asObservable();
   }
 
   getRecipe(recipeId: string) {
-    return {
-      ...this.recipes.find(recipe => recipe.id === recipeId)
-    };
+    return this.http.get<RecipeData>(`https://mycookbook-ad00f-default-rtdb.firebaseio.com/recipeList.json`
+    ).pipe(
+      map(recipeData => {
+        return new Recipe(recipeId, recipeData.title, recipeData.imageUrl, recipeData.ingredients, recipeData.instructions, recipeData.userId);
+      })
+    );
   }
 
   deleteRecipe(recipeId: string) {
-    this.recipes = this.recipes.filter(recipe =>recipe.id !== recipeId);
+    //this._recipes = this._recipes.filter(recipe =>recipe.id !== recipeId);
+    /*return this.recipes.pipe(take(1), delay(750), tap( recipes => {
+      this._recipes.next(recipes.filter(r => r.id !== recipeId))
+    })
+    );*/
+
+    return this.http.delete(`https://mycookbook-ad00f-default-rtdb.firebaseio.com/recipeList/${recipeId}.json`
+    ).pipe(switchMap(() => {
+      return this.recipes
+    }),
+    take(1),
+    tap(r => {
+      this._recipes.next(r.filter(recipe => recipe.id!==recipeId));
+    })
+    );
   }
 
   addRecipe(title: string, imageUrl: string, ingredients: string[], instructions: string) {
+    let generatedId: string;
     const newRecipe = new Recipe(Math.random().toString(), title, imageUrl, ingredients, instructions, this.authService.userId);
-    this.recipes.push(newRecipe);
+    console.log('adding recipe');
+
+    return this.http.post<{name: string}>('https://mycookbook-ad00f-default-rtdb.firebaseio.com/recipeList.json',
+    {...newRecipe, id: null})
+    .pipe(switchMap(resData => {
+      generatedId = resData.name;
+      return this.recipes;
+    }),
+    take(1),
+    tap(recipes => {
+      newRecipe.id = generatedId;
+      this._recipes.next(recipes.concat(newRecipe));
+    }))
   }
 
   updateRecipe(recipeId: string, newTitle: string, newImg: string, newIngrList: string[], newInstr: string) {
-    const updatedRecipeIndex = this.recipes.findIndex(recipe => recipe.id === recipeId);
-    const updatedRecipeList = [...this.recipes];
-    const oldRecipe = updatedRecipeList[updatedRecipeIndex];
-    updatedRecipeList[updatedRecipeIndex] = new Recipe(oldRecipe.id, newTitle, newImg, newIngrList, newInstr, oldRecipe.userId)
-    this.recipes = updatedRecipeList;
-  }
+    let updatedRecipes: Recipe[];
+    return this.recipes.pipe(take(1), switchMap(recipes => {
+      if(!recipes || recipes.length <= 0) {
+        return this.fetchRecipes();
+      } else {
+        return of(recipes);
+      }
+    }), switchMap(recipes => {
+      const updatedRecipeIndex = recipes.findIndex(r => r.id===recipeId);
+      updatedRecipes = [...recipes];
+      const oldRecipe = updatedRecipes[updatedRecipeIndex];
+      updatedRecipes[updatedRecipeIndex] = new Recipe(
+        oldRecipe.id,
+        newTitle,
+        newImg,
+        newIngrList,
+        newInstr,
+        oldRecipe.userId
+        );
+        return this.http.put(
+          `https://mycookbook-ad00f-default-rtdb.firebaseio.com/recipeList/${recipeId}.json`,
+          {...updatedRecipes[updatedRecipeIndex], id: null}
+          );
+    }), tap(() => {
+          this._recipes.next(updatedRecipes);
+    })
+    );
 
+  }
 }
