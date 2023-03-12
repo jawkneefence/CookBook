@@ -1,0 +1,63 @@
+<ion-header>
+  <ion-toolbar color="tlbr">
+    <ion-title text-center>{{selectedRecipe.title}}</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button (click)="onCancel()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-text-center">
+  <form [formGroup]="form">
+    <ion-grid>
+      <ion-row class="ion-margin-top">
+        <ion-col size="10" offset="1" class="ion-margin">
+          <ion-item>
+            <ion-label position="floating">Name: </ion-label>
+            <ion-input formControlName="newTitle" type="text"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="10" offset="1" class="ion-margin">
+          <ion-item>
+            <ion-label position="floating">Image (Optional): </ion-label>
+            <ion-input formControlName="newImg" type="text"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row  formArrayName=ingrList>
+        <ion-col size="10" offset="1" class="ion-margin">
+          <ion-list *ngFor="let ingr of arrForm.controls; index as i">
+            <ion-item>
+              <ion-label class="ion-margin-right" position="floating">Ingredient: </ion-label>
+              <ion-input class="ion-margin-right" formControlName="{{i}}" type="text" ></ion-input>
+              <ion-buttons slot="end">
+                <ion-icon *ngIf="i>=1" size="large" name="trash-bin-outline" color="danger" (click)="onRemoveIngr(i)"></ion-icon>
+                <div class="ion-padding-horizontal"> </div>
+                <ion-icon name="add-circle-outline" size="large" color="secondary" (click) = "onAddIngr()"></ion-icon>
+              </ion-buttons>
+            </ion-item>
+          </ion-list>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="10" offset="1" class="ion-margin">
+          <ion-item>
+            <ion-label position="floating">Instructions: </ion-label>
+            <ion-textarea formControlName="newInstr" [autoGrow]="true"></ion-textarea>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="10" offset="1" class="ion-margin" (click)="onSaveChanges()">
+          <ion-button expand="block" type="submit" [disabled]="!form.valid" color="tlbr">
+            Save Changes
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </form>
+</ion-content>

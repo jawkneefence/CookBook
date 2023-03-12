@@ -3,6 +3,13 @@
 
 /** Ionic CSS Variables **/
 :root {
+
+  //Custom Colors
+  --ion-color-tlbr: #1f8a3f;
+  .ion-color-tlbr {
+    --ion-color-base: var(--ion-color-tlbr);
+  }
+
   /** primary **/
   --ion-color-primary: #3880ff;
   --ion-color-primary-rgb: 56, 128, 255;
