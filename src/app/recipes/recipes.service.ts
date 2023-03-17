@@ -1,9 +1,11 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { HttpOptions } from '@capacitor/core/types/core-plugins';
 import { LoadingController } from '@ionic/angular';
 import { map, switchMap, take, tap, BehaviorSubject, delay, of } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 import { Recipe } from './recipe.model';
+
 
 interface RecipeData {
   imageUrl: string,
@@ -20,28 +22,51 @@ export class RecipesService {
   private _recipes = new BehaviorSubject<Recipe[]>([])
   constructor(private authService: AuthService, private http:HttpClient, private loadingCtrl: LoadingController) { }
 
+
+  uploadImage(newImg: File) {
+    console.log('UPLOADING IMAGE...');
+    const uploadData = new FormData();
+    uploadData.append('newImg', newImg);
+    console.log('UPLOADING IMAGE...', newImg);
+    return this.http.post<{imageUrl: string, imagePath: string}>(
+      'https://us-central1-mycookbook-ad00f.cloudfunctions.net/storeImage',
+      uploadData
+    )
+  }
+
+
   fetchRecipes() {
-    return this.http.get<{[key: string]: RecipeData}>(`https://mycookbook-ad00f-default-rtdb.firebaseio.com/recipeList.json?orderBy="userId"&equalTo="${this.authService.userId}"`)
-    .pipe(map(resData => {
-      const fetchedRecipes = [];
-      for (const key in resData) {
-        if(resData.hasOwnProperty(key)) {
-          fetchedRecipes.push(new Recipe(key,
-            resData[key].title,
-            resData[key].imageUrl,
-            resData[key].ingredients,
-            resData[key].instructions,
-            resData[key].userId
-            )
-          );
+
+    return this.authService.userId.pipe(
+      take(1),
+      switchMap(userId => {
+        if(!userId) {
+          throw new Error('No user id found!');
         }
-      }
-      return fetchedRecipes;
-    }),
-    tap(recipes => {
-      this._recipes.next(recipes);
-    })
-    );
+        console.log('FETCHING RECIPES WITH ID: ', userId)
+        return this.http.get<{[key: string]: RecipeData}>
+          (`https://mycookbook-ad00f-default-rtdb.firebaseio.com/recipeList.json?orderBy="userId"&equalTo="${userId}"`);
+        }),
+        map(resData => {
+          const fetchedRecipes = [];
+          for (const key in resData) {
+            if(resData.hasOwnProperty(key)) {
+              fetchedRecipes.push(new Recipe(key,
+                resData[key].title,
+                resData[key].imageUrl,
+                resData[key].ingredients,
+                resData[key].instructions,
+                resData[key].userId
+                )
+              );
+            }
+          }
+          return fetchedRecipes;
+        }),
+        tap(recipes => {
+          this._recipes.next(recipes);
+        })
+    )
   }
 
   get recipes() {
@@ -49,7 +74,7 @@ export class RecipesService {
   }
 
   getRecipe(recipeId: string) {
-    return this.http.get<RecipeData>(`https://mycookbook-ad00f-default-rtdb.firebaseio.com/recipeList.json`
+    return this.http.get<RecipeData>(`https://mycookbook-ad00f-default-rtdb.firebaseio.com/recipeList/${recipeId}.json`
     ).pipe(
       map(recipeData => {
         return new Recipe(recipeId, recipeData.title, recipeData.imageUrl, recipeData.ingredients, recipeData.instructions, recipeData.userId);
@@ -58,11 +83,6 @@ export class RecipesService {
   }
 
   deleteRecipe(recipeId: string) {
-    //this._recipes = this._recipes.filter(recipe =>recipe.id !== recipeId);
-    /*return this.recipes.pipe(take(1), delay(750), tap( recipes => {
-      this._recipes.next(recipes.filter(r => r.id !== recipeId))
-    })
-    );*/
 
     return this.http.delete(`https://mycookbook-ad00f-default-rtdb.firebaseio.com/recipeList/${recipeId}.json`
     ).pipe(switchMap(() => {
@@ -77,12 +97,23 @@ export class RecipesService {
 
   addRecipe(title: string, imageUrl: string, ingredients: string[], instructions: string) {
     let generatedId: string;
-    const newRecipe = new Recipe(Math.random().toString(), title, imageUrl, ingredients, instructions, this.authService.userId);
-    console.log('adding recipe');
-
-    return this.http.post<{name: string}>('https://mycookbook-ad00f-default-rtdb.firebaseio.com/recipeList.json',
-    {...newRecipe, id: null})
-    .pipe(switchMap(resData => {
+    let newRecipe: Recipe;
+    return this.authService.userId.pipe(take(1), switchMap(userId => {
+      if(!userId) {
+        throw new Error('No user id found!');
+      }
+      newRecipe = new Recipe(Math.random().toString(),
+      title,
+      imageUrl,
+      ingredients,
+      instructions,
+      userId
+      );
+      return this.http.post<{name: string}>('https://mycookbook-ad00f-default-rtdb.firebaseio.com/recipeList.json',
+      {...newRecipe, id: null}
+      );
+    }),
+    switchMap(resData => {
       generatedId = resData.name;
       return this.recipes;
     }),

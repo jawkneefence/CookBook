@@ -4,7 +4,9 @@ import { RecipesService } from '../recipes.service';
 import { Recipe } from '../recipe.model';
 import { AlertController, ModalController, LoadingController, NavController } from '@ionic/angular';
 import { EditRecipeComponent } from './edit-recipe/edit-recipe.component';
-import { Subscription } from 'rxjs';
+import { Subscription, switchMap } from 'rxjs';
+
+
 
 @Component({
   selector: 'app-recipe-detail',
@@ -109,12 +111,19 @@ export class RecipeDetailPage implements OnInit, OnDestroy {
           message: 'Updating Recipe...'
         }).then(loadingElement => {
           loadingElement.present();
-          //Update recipe
-          this.recipesService.updateRecipe(this.recipeId, res.data.form.value.newTitle, res.data.form.value.newImg, res.data.form.value.ingrList, res.data.form.value.newInstr).subscribe();
-          loadingElement.dismiss();
+          console.log('Form newImg value: ', res.data.form.get('newImg').value)
+          this.recipesService.uploadImage(res.data.form.get('newImg').value)
+          .pipe(
+          switchMap(uploadRes => {
+          console.log('adding recipe...: ', uploadRes.imageUrl);
+          return this.recipesService.updateRecipe(this.recipeId, res.data.form.value.newTitle,uploadRes.imageUrl, res.data.form.value.ingrList, res.data.form.value.newInstr);
+        })
+      ).subscribe(() => {
+        loadingElement.dismiss();
+        this.ngRouter.navigate(['recipes/'])
+      })
         })
       }
-      this.ngRouter.navigateByUrl(`/recipes`);
     });
     })
   }

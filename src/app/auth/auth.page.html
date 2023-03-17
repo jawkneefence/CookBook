@@ -29,8 +29,8 @@
     <ion-row>
       <ion-col class="ion-text-center">
         <!--<ion-spinner class="ion-margin-top" color="tlbr" *ngIf="isLoading"></ion-spinner>-->
-        <ion-button type="submit" class="ion-margin" color="tlbr"  expand="block" [disabled]="!loginForm.valid"(click)="onLogin()">
-          Login
+        <ion-button type="submit" class="ion-margin" color="tlbr"  expand="block" [disabled]="!loginForm.valid">
+          {{isLogin ? 'Login' : 'Signup'}}
         </ion-button>
       </ion-col>
     </ion-row>

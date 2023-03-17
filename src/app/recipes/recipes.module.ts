@@ -8,6 +8,7 @@ import { RecipesPageRoutingModule } from './recipes-routing.module';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { RecipesPage } from './recipes.page';
 
+
 @NgModule({
   imports: [
     CommonModule,
