@@ -48,6 +48,7 @@ export class EditRecipeComponent  implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.selectedImage  = this.selectedRecipe.imageUrl;
     //Create Form Array
     this.arrForm = new FormArray([
       new FormControl(this.selectedRecipe.ingredients[0], {
@@ -68,8 +69,8 @@ export class EditRecipeComponent  implements OnInit {
         updateOn: 'blur',
         validators: [Validators.required]
       }),
-      newImg: new FormControl(this.selectedRecipe.imageUrl, {
-        updateOn: 'blur'
+      newImg: new FormControl(this.selectedImage, {
+        updateOn: 'change'
       }),
       ingrList: this.arrForm,
       newInstr: new FormControl(this.selectedRecipe.instructions, {

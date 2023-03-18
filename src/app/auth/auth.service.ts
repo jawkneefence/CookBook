@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, from, map, tap } from 'rxjs'
 import { User } from './user.model';
 import { Preferences, SetOptions, GetOptions, RemoveOptions } from '@capacitor/preferences'
+import { environment } from 'src/environments/environment';
 
 export interface AuthResponseData {
   kind: string;
@@ -19,7 +20,6 @@ export interface AuthResponseData {
 })
 export class AuthService {
   private _user = new BehaviorSubject<User>(null);
-  private apiKey = 'AIzaSyAm6-_s44XJCY4g1fpfP--GPN0MKsiULUc'
 
   get userIsAuthenticated() {
     return this._user.asObservable().pipe(map(user => {
@@ -44,13 +44,13 @@ export class AuthService {
   }
 
   signup(email: string, password: string) {
-    return this.http.post<AuthResponseData>(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${this.apiKey}`,
+    return this.http.post<AuthResponseData>(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${environment.firebaseAPIKey}`,
     {email: email, password: password, returnSecureToken: true}
     ).pipe(tap(this.setUserData.bind(this)));
   }
 
   login(email: string, password: string) {
-    return this.http.post<AuthResponseData>(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${this.apiKey
+    return this.http.post<AuthResponseData>(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.firebaseAPIKey
   }`,{email: email, password: password, returnSecureToken: true}
   ).pipe(tap(this.setUserData.bind(this)));
 

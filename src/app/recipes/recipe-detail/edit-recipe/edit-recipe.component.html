@@ -22,17 +22,21 @@
       </ion-row>
       <ion-row>
         <ion-col size="10" offset="1" class="ion-margin">
-          <ion-item>
+          <ion-item *ngIf="selectedImage">
+            <p>Image editing coming soon!</p>
+          </ion-item>
+          <!--
+          <ion-item *ngIf="!selectedImage">
             <div>
-              <ion-label>Image (Optional): </ion-label>
-              <ion-img role="button" class="newImg" (click)="onPickImage()" [src]="selectedImage" *ngIf="selectedImage"></ion-img>
-              <ion-button color="tlbr" expand="block" (click)="onPickImage()" *ngIf="!selectedImage">
+              <ion-label>Image: </ion-label>
+              <ion-img role="button" class="newImg" (click)="onPickImage()" ></ion-img>
+              <ion-button color="tlbr" expand="block" (click)="onPickImage()">
                 <ion-icon name="camera" ></ion-icon>
                 <ion-label>Take Picture</ion-label>
               </ion-button>
               <input type="file" class="newImg" #filePicker class="newImg" (change)="onFileChosen($event)">
             </div>
-          </ion-item>
+          </ion-item>-->
         </ion-col>
       </ion-row>
       <ion-row  formArrayName=ingrList>

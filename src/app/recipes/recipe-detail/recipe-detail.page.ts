@@ -111,6 +111,12 @@ export class RecipeDetailPage implements OnInit, OnDestroy {
           message: 'Updating Recipe...'
         }).then(loadingElement => {
           loadingElement.present();
+          this.recipesService.updateRecipe(this.recipeId, res.data.form.value.newTitle, res.data.form.value.newImg, res.data.form.value.ingrList, res.data.form.value.newInstr)
+          .subscribe(() => {
+            loadingElement.dismiss();
+            this.ngRouter.navigate([`recipes/`])
+          });
+          /*
           console.log('Form newImg value: ', res.data.form.get('newImg').value)
           this.recipesService.uploadImage(res.data.form.get('newImg').value)
           .pipe(
@@ -121,7 +127,7 @@ export class RecipeDetailPage implements OnInit, OnDestroy {
       ).subscribe(() => {
         loadingElement.dismiss();
         this.ngRouter.navigate(['recipes/'])
-      })
+      })*/
         })
       }
     });
