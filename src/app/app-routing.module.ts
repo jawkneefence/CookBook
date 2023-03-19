@@ -23,6 +23,10 @@ const routes: Routes = [
   {
     path: 'auth',
     loadChildren: () => import('./auth/auth.module').then( m => m.AuthPageModule)
+  },
+  {
+    path: 'discover',
+    loadChildren: () => import('./discover/discover.module').then( m => m.DiscoverPageModule)
   }
 ];
 

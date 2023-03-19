@@ -1,7 +1,7 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.my.cookbook',
+  appId: 'com.johnnys.cookbook',
   appName: 'My Cookbook',
   webDir: 'www',
   bundledWebRuntime: false

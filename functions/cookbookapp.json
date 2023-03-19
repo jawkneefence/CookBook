@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "mycookbook-ad00f",
+  "private_key_id": "5ac788f03cee2f77aa9e85472a4a3d2a294ccdfa",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDFHNeyXGpssuU2\nlMawHEFNBcZ9Eidy7C1pgW25B860nWiGoTZ4LEeXhffNhzOaEDpAlRC/81FfeQ/i\n0JcsqPP83xhRIHY4/iQJtGaeT702OrntHv7FPszotjQpUht1y8vMfwHjoYbcMy4Q\nv1qmS/Cr9jD6ndqOrQ5xsB7zQYl57x+fcewIigp0pG2ut6DUliN71rYawyHdk0A8\nYxYhtHXIF5CubLrPAkxxUKRBd+JvplBoc9FnpwFXv/7fFvJThlXCFPrb47vom+l+\nvomOyf10X6Vj5SYHJSmUmjtzzROzU5orATurPeTGGbXhIwKlJ4Pg6CgC81HFcvvQ\nw/LoNlwrAgMBAAECggEANJtdCfJWSQp52FZerNPtrbPT5L96ndZgzF7JvO9TgKre\nIchW9D3FIbCUkVr7L6wTD/d4z/INjrCNx9gp8LZq39te7w/93XoefiSSmr/nXNjR\nlHKIRnZbU+SFCV4rjAXHL53aEDmk95IFQlz/wZBU/GApdEm68gdH6pm5uOyN12e8\n8lk0354FYJmLBKrZiKTWlI1ZNWVi/GeaHY1grdiAphmekn4ATmLSqOSs2W9Mdmmb\nZj2grovj/0v1xzfmR7u2dlYhX88dIsRrMj1WjjBi9pllzllZY7/SYIfQtf9eXLtJ\nn6cXdSYdugQK65LDocmv1WCH5/y4U4ydoCorCxj94QKBgQD5q1+9ff+vUhB2Iqo4\noJChtlyVc4XEoo6VowoC7oAXKsFiO2X64tiz2O60XmEcrZwoUQCoSgcxwmVLM9y9\nwf5Eyryx9TGUIT/iWdmEZybqpRzophyOLR9KFQqCWJ0tR8jIbGzceJm6pjNJmubH\nLm+7CpdP4V5ybZUBmT/GN8Hv+wKBgQDKHFFrz3pfmskShLE9lx35pmQajcOhUhr6\nlUHb19BplTWt8VeWe2dykycPTyUlinNklbcPAJttPaBLnkO2JbFd0dLpBV20tiOq\nMfxw3mnYFvynWNnLXoj7OoFnynBHbTsEopH8DKM3C93cnK5CVao47yIfJw+XbqCI\nUmukNCodkQKBgECpBpGf6TExsru1vJoP04VeIlo+Yf2MEBtm7zfVJu1ZEF5tfbrd\nNzxUyXWDH+l6eP/kAqSTD4vuiadRVjD65exRCU+Zbe6sMcxgcrocsPKCMpt6MdkM\njJb2HhOl+Yb5mWF22za6MS4qzwuYB368Ywlw88EnX/uIr9eLJf4jAKIzAoGAX1ek\ngTtK+zbFi9rU0b0sAs0fg/dERiG5YGRwwQi55FTjEb88Flz4m/AXCP3JBECf1t9Z\nj9Y1e/8KUyHBx3dYiG2nFQ3W+pzBjlQuRgBl5e5SGY+sjmd2Ly2WRiQVe1xn7vPR\n8hj0Fc+fRacT/W7z8g+9BP0kOceSKzzWUovZIkECgYEA7ft/6WkoU+upNBxdrspd\nDQ3wl4vxK09r0PStHbdLON6tWazxkXLfm/freLnSvFNo10q7CyiHfxIN/KKCgNTg\n6Ap8QcavHGExGmA6Zta+PtOaNYYzXS+z/+pHz98hb4TDs4FwTyHmVAeLuXGT3S0g\nCfZlgyNfQ55XBG02H7pRmfg=\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-hfh8i@mycookbook-ad00f.iam.gserviceaccount.com",
+  "client_id": "116521250134143246858",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-hfh8i%40mycookbook-ad00f.iam.gserviceaccount.com"
+}

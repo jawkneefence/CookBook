@@ -57,7 +57,8 @@ export class NewRecipePage implements OnInit {
         validators: [Validators.required]
       }),
       newImg: new FormControl(null, {
-        updateOn: 'change'
+        updateOn: 'change',
+        validators: [Validators.required]
       }),
       ingrList: this.arrForm,
       newInstr: new FormControl(null, {
@@ -153,7 +154,7 @@ export class NewRecipePage implements OnInit {
       })
     });
     for(var i = 0; i < this.form.value.ingrList.length; i++) {
-      if(this.form.value.ingrList[i]=='') {
+      if(this.form.value.ingrList[i]==='') {
         this.onRemoveIngr(i);
         console.log('null ingr removed');
       }

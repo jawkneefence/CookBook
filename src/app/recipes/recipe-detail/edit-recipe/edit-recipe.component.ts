@@ -146,7 +146,7 @@ export class EditRecipeComponent  implements OnInit {
 
   onSaveChanges() {
     for(var i = 0; i < this.form.value.ingrList.length; i++) {
-      if(this.form.value.ingrList[i]=='') {
+      if(this.form.value.ingrList[i]==='') {
         this.onRemoveIngr(i);
         console.log('null ingr removed');
       }
